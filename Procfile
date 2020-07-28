@@ -1,0 +1,1 @@
+scraper: python main.py
