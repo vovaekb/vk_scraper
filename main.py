@@ -42,16 +42,16 @@ class Scraper:
         response = self.session.get(self.url)
 
         soup = bs(response.text, 'lxml')
-        post_elements = soup.findAll('div', {'class': 'author-page-article'})
+        article_elements = soup.findAll('div', {'class': 'author-page-article'})
     
-        for post_element in post_elements:
-            title = post_element.find('span', {'class': 'author-page-article__title'}).text
+        for article_element in article_elements:
+            title = article_element.find('span', {'class': 'author-page-article__title'}).text
             
-            image_element = post_element.find('div', {'class': 'author-page-article__preview'})
+            image_element = article_element.find('div', {'class': 'author-page-article__preview'})
             image_url1 = re.search(r'\((.*?)\)', image_element['style']).group(1)
 
             # open article page
-            link_element = post_element.find('a', {'class': 'author-page-article__href'})
+            link_element = article_element.find('a', {'class': 'author-page-article__href'})
             link = f'{BASE_URL}{link_element["href"]}'
         
             article_page = self.session.get(link)
@@ -73,7 +73,7 @@ class Scraper:
             }
 
             for i, image_url in enumerate(image_urls):
-                article_data[f'{CSV_FIELDS["IMAGE_URL"]}{i}'] = image_url
+                article_data[f'{CSV_FIELDS["IMAGE_URL"]}{i+1}'] = image_url
 
             self.articles.append(article_data)
 
@@ -89,7 +89,7 @@ class Scraper:
         
         self.save_csv()
 
-def parse_posts():
+def parse_articles():
     """
     Function for scraping articles from VK group. Creating Scraper object.
     """
@@ -97,4 +97,4 @@ def parse_posts():
     scraper.process_data()
 
 if __name__ == '__main__':
-    parse_posts()
+    parse_articles()
