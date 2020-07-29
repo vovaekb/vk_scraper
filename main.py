@@ -15,6 +15,20 @@ CSV_FIELDS = {
 
 
 class Scraper:
+    """
+    Class for parsing articles from VK group and saving to CSV
+
+    Methods
+    -------
+    scrape()
+            Performs parsing articles from VK group
+
+    save_csv()
+            Performs saving parsed data to CSV
+            
+    process_data()
+            Main method performing processing articles. It calling methods scrape() and save_csv()
+    """
     def __init__(self):
         self.url = GROUP_URL
         self.csv_file = CSV_FILE
@@ -76,7 +90,9 @@ class Scraper:
         self.save_csv()
 
 def parse_posts():
-    """Function for scraping"""
+    """
+    Function for scraping articles from VK group. Creating Scraper object.
+    """
     scraper = Scraper()
     scraper.process_data()
 
