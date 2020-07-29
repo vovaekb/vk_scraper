@@ -5,11 +5,19 @@ import pandas as pd
 from bs4 import BeautifulSoup as bs
 
 BASE_URL = 'https://vk.com'
+GROUP_URL = 'https://vk.com/@yvkurse'
+CSV_FILE = 'yvkurse_articles.csv'
+CSV_FIELDS = {
+    'TITLE': 'Заголовок',
+    'TEXT': 'Текст статьи',
+    'IMAGE_URL': 'ImageURL'
+}
+
 
 class Scraper:
     def __init__(self):
-        self.url = 'https://vk.com/@yvkurse'
-        self.csv_file = 'yvkurse_articles.csv'
+        self.url = GROUP_URL
+        self.csv_file = CSV_FILE
         self.session = requests.Session()
 
     def scrape(self):
@@ -17,7 +25,7 @@ class Scraper:
         self.articles = []
     
         # get group page
-        response = self.session.get('https://vk.com/@yvkurse')
+        response = self.session.get(self.url)
 
         soup = bs(response.text, 'lxml')
         post_elements = soup.findAll('div', {'class': 'author-page-article'})
@@ -35,28 +43,30 @@ class Scraper:
             article_page = self.session.get(link)
             article_content = bs(article_page.text, 'lxml')
         
+            # parse text
             text_elements = article_content.findAll('p', {'class': 'article_decoration_before'})
 
             text_chunks = [text_element.text for text_element in text_elements]
             text = '\n'.join(text_chunks)
 
-            image_elements = article_content.findAll('img', {'class': 'article_object_photo__image_blur'})
-
-            imageurl1 = image_elements[0]['src']
-            imageurl2 = image_elements[1]['src'] if len(image_elements) > 1 else None
+            # get images
+            image_elements = article_content.findAll('img', {'class': ['article_object_photo__image_blur', 'article_carousel_img']})
+            image_urls = [image['src'] for image in image_elements]
 
             article_data = {
                 'title': title,
-                'text': text,
-                'imageUrl1': imageurl1,
-                'imageUrl2': imageurl2
+                'text': text
             }
-            self.articles.append(article_data) 
+
+            for i, image_url in enumerate(image_urls):
+                article_data[f'{CSV_FIELDS["IMAGE_URL"]}{i}'] = image_url
+
+            self.articles.append(article_data)
 
     def save_csv(self):
         print('Saving csv...')
         articles_df = pd.DataFrame.from_dict(self.articles)
-        articles_df.columns = ['Заголовок', 'Текст статьи', 'ImageURL1', 'ImageURL2']
+        articles_df.rename(columns={ 'title': CSV_FIELDS['TITLE'], 'text': CSV_FIELDS['TEXT'] }, inplace=True)
         articles_df.to_csv(self.csv_file, encoding='utf-16')
 
     def process_data(self):
