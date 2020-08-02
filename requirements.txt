@@ -7,6 +7,6 @@ numpy==1.19.1
 pandas==1.0.5
 pluginlib==1.10.7
 pytz==2020.1
-requests==2.18.4
+requests==2.20.0
 urllib3==1.22
 xacro==1.9.5
