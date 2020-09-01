@@ -47,9 +47,6 @@ class Scraper:
         for article_element in article_elements:
             title = article_element.find('span', {'class': 'author-page-article__title'}).text
             
-            image_element = article_element.find('div', {'class': 'author-page-article__preview'})
-            image_url1 = re.search(r'\((.*?)\)', image_element['style']).group(1)
-
             # open article page
             link_element = article_element.find('a', {'class': 'author-page-article__href'})
             link = f'{BASE_URL}{link_element["href"]}'
