@@ -2,7 +2,7 @@ actionlib==1.11.13
 beautifulsoup4==4.6.0
 chardet==3.0.4
 laser-geometry==1.6.4
-lxml==4.5.2
+lxml==4.6.2
 numpy==1.19.1
 pandas==1.0.5
 pluginlib==1.10.7
