@@ -8,5 +8,5 @@ pandas==1.0.5
 pluginlib==1.10.7
 pytz==2020.1
 requests==2.18.4
-urllib3==1.22
+urllib3==1.24.2
 xacro==1.9.5
